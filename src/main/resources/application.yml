@@ -1,0 +1,24 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/staticDB?authSource=admin
+  jpa:
+    generate-ddl: true
+  datasource:
+    url: jdbc:postgresql://localhost:5430/hostel_db
+    username: postgres
+    password: postgres
+  hikari:
+    schema: hostel_schema
+    connection-init-sql: CREATE SCHEMA IF NOT EXISTS hostel_schema
+    connection-timeout: 10000
+  kafka:
+    bootstrapServers: localhost:9092
+
+app:
+  kafka:
+    userCreatedTopic: "createdUserTopic"
+    bookingTopic: "bookingTopic"
+    kafkaMessageGroup: "appGroup"
+  exception:
+    enable: true
