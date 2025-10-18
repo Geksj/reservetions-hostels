@@ -22,3 +22,5 @@ app:
     kafkaMessageGroup: "appGroup"
   exception:
     enable: true
+  date:
+    format: "dd/MM/yyyy"
