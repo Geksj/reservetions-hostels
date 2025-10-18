@@ -20,7 +20,5 @@ app:
     userCreatedTopic: "createdUserTopic"
     bookingTopic: "bookingTopic"
     kafkaMessageGroup: "appGroup"
-  exception:
-    enable: true
   date:
     format: "dd/MM/yyyy"

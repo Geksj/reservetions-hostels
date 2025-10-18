@@ -22,6 +22,11 @@ public class AppDateUtils {
                 .toInstant();
     }
 
+    public static LocalDate parseInstantToLD(Instant date) {
+        return date.atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
     public static Instant parseStringToInstant(String stringDate) {
         String[] strings = stringDate.split("/");
 

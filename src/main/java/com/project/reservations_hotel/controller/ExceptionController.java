@@ -4,6 +4,9 @@ import com.project.reservations_hotel.exception.AlreadyExistsException;
 import com.project.reservations_hotel.exception.RoomAlreadyBookedException;
 import com.project.reservations_hotel.model.ExceptionResponse;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
+import org.apache.kafka.common.protocol.types.Field;
+import org.apache.kafka.common.security.oauthbearer.internals.secured.ValidateException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +55,16 @@ public class ExceptionController {
                 .body(ExceptionResponse.builder()
                         .statusCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                         .message("An unexpected error occurred")
+                        .timestamp(Instant.now())
+                        .build());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleValidateExceptions(ConstraintViolationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.builder()
+                        .statusCode(String.valueOf(HttpStatus.BAD_REQUEST))
+                        .message(ex.getMessage())
                         .timestamp(Instant.now())
                         .build());
     }

@@ -8,6 +8,8 @@ import com.project.reservations_hotel.model.response.RoomFilterResponse;
 import com.project.reservations_hotel.model.response.RoomListResponse;
 import com.project.reservations_hotel.model.response.RoomResponse;
 import com.project.reservations_hotel.service.RoomService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/rooms")
 @RequiredArgsConstructor
+@Validated
 public class RoomController {
 
     private final RoomService roomService;
@@ -42,7 +45,7 @@ public class RoomController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<RoomResponse> findById(@PathVariable("id") Long roomId) {
+    public ResponseEntity<RoomResponse> findById(@PathVariable("id") @Min(1) Long roomId) {
         return ResponseEntity.ok(
                 roomMapper.roomToResponse(roomService.findById(roomId))
         );
@@ -50,7 +53,7 @@ public class RoomController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RoomResponse> createRoom(@RequestBody @Validated RoomRequest request) {
+    public ResponseEntity<RoomResponse> createRoom(@Valid @RequestBody RoomRequest request) {
         Room createdRoom = roomService.create(roomMapper.requestToRoom(request));
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -59,7 +62,9 @@ public class RoomController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RoomResponse> updateRoom(@PathVariable("id") Long roomId, @RequestBody @Validated RoomRequest request) {
+    public ResponseEntity<RoomResponse> updateRoom(
+            @PathVariable("id") @Min(1) Long roomId,
+            @Valid @RequestBody RoomRequest request) {
         Room updatedRoom = roomService.update(roomMapper.requestToRoom(roomId, request));
 
         return ResponseEntity.ok(roomMapper.roomToResponse(updatedRoom));
@@ -67,7 +72,7 @@ public class RoomController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") Long roomId) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") @Min(1) Long roomId) {
         roomService.deleteById(roomId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

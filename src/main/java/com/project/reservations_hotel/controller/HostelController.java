@@ -9,6 +9,8 @@ import com.project.reservations_hotel.model.response.HostelFilterResponse;
 import com.project.reservations_hotel.model.response.HostelListResponse;
 import com.project.reservations_hotel.model.response.HostelResponse;
 import com.project.reservations_hotel.service.HostelService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/hostels")
 @RequiredArgsConstructor
+@Validated
 public class HostelController {
 
     private final HostelService hostelService;
@@ -35,7 +38,8 @@ public class HostelController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<HostelResponse> findById(@PathVariable("id") Long hostelId) {
+    public ResponseEntity<HostelResponse> findById(
+            @PathVariable("id") @Min(value = 1, message = "The value must be more 1") Long hostelId) {
         return ResponseEntity.ok(
                 hostelMapper.hostelToResponse(hostelService.findById(hostelId))
         );
@@ -52,7 +56,7 @@ public class HostelController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HostelResponse> createHostel(@RequestBody @Validated HostelRequest request) {
+    public ResponseEntity<HostelResponse> createHostel(@Valid @RequestBody HostelRequest request) {
         Hostel hostel = hostelService.createHostel(hostelMapper.requestToHostel(request));
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -61,7 +65,9 @@ public class HostelController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HostelResponse> updateHostel(@PathVariable("id") Long hostelId, @RequestBody @Validated HostelRequest request) {
+    public ResponseEntity<HostelResponse> updateHostel(
+            @PathVariable("id") @Min(value = 1, message = "The value must be more 1") Long hostelId,
+            @Valid @RequestBody HostelRequest request) {
         Hostel updatedHostel = hostelService.updateHostel(hostelMapper.requestToHostel(hostelId, request));
 
         return ResponseEntity.ok(hostelMapper.hostelToResponse(updatedHostel));
@@ -69,13 +75,14 @@ public class HostelController {
 
     @PutMapping("/rating")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<HostelResponse> changeRating(@RequestBody @Validated RatingRequest request) {
+    public ResponseEntity<HostelResponse> changeRating(@Valid @RequestBody RatingRequest request) {
         return ResponseEntity.ok(hostelMapper.hostelToResponse(hostelService.addRating(request)));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") Long hostelId) {
+    public ResponseEntity<Void> deleteById(
+            @PathVariable("id") @Min(value = 1, message = "The value must be more 1") Long hostelId) {
         hostelService.deleteById(hostelId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

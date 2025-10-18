@@ -8,6 +8,7 @@ import com.project.reservations_hotel.entity.eventsEntity.UserStatData;
 import com.project.reservations_hotel.model.kafka.StatEvent;
 import com.project.reservations_hotel.repository.BookingStatRepository;
 import com.project.reservations_hotel.repository.UserStatRepository;
+import com.project.reservations_hotel.utils.AppDateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,10 +33,12 @@ public class StatisticService {
             UserStatData user = new UserStatData();
 
             user.setUserId(event.getUserId());
-            user.setCreatedDate(event.getCreatedDate().atZone(ZoneId.systemDefault())
-                    .toLocalDate());
+            user.setCreatedDate(AppDateUtils.parseInstantToLD(
+                    event.getCreatedDate()
+            ));
 
             userStatRepository.save(user);
+
             log.info("User saved. userId: {}", event.getUserId());
 
             return;

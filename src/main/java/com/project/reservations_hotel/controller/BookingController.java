@@ -7,6 +7,7 @@ import com.project.reservations_hotel.model.request.BookingRequest;
 import com.project.reservations_hotel.model.response.BookingListResponse;
 import com.project.reservations_hotel.model.response.BookingResponse;
 import com.project.reservations_hotel.service.BookingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class BookingController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<BookingResponse> bookingRoom(@RequestBody @Validated BookingRequest bookingRequest) {
+    public ResponseEntity<BookingResponse> bookingRoom(@Valid @RequestBody BookingRequest bookingRequest) {
         Booking booking = bookingService.bookingOnFreeDate(bookingMapper.requestToBooking(bookingRequest));
 
         kafkaTemplate.send(bookingTopic, StatEvent.builder()

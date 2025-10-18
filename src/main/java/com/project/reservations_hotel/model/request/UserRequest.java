@@ -2,6 +2,7 @@ package com.project.reservations_hotel.model.request;
 
 import com.project.reservations_hotel.entity.RoleType;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,16 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserRequest {
 
-    @Length(min = 4, max = 10,
-            message = "Минимальная длина для username 4, а максимальная 10")
+    @NotBlank
     private String username;
 
-    @Email(regexp = "^[A-Za-z0-9_.-]+@[A-Za-z.-]+\\\\.[A-Za-z]{2,}$",
-    message = "Неккоректный email")
+    @NotBlank
+    //@Email(regexp = "^[A-Za-z0-9_.-]@[A-Za-z.-].[A-Za-z]{2,}$")
     private String email;
 
-    @Length(min = 4, max = 20,
-            message = "Минимальная длина для password 4, а максимальная 10")
+    @NotBlank
     private String password;
 
     private Set<RoleType> roles;

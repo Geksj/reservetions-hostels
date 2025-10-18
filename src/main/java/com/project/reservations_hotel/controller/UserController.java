@@ -7,6 +7,7 @@ import com.project.reservations_hotel.model.response.UserListResponse;
 import com.project.reservations_hotel.model.response.UserResponse;
 import com.project.reservations_hotel.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -33,7 +35,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<UserResponse> findById(@PathVariable("id") Long userId) {
+    public ResponseEntity<UserResponse> findById(@PathVariable("id") @Min(1) Long userId) {
         return ResponseEntity.ok(
                 userMapper.userToResponse(userService.findById(userId))
         );
@@ -45,14 +47,14 @@ public class UserController {
                 userMapper.requestToUser(request)
         );
 
-
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userMapper.userToResponse(cretedUser));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN') or (hasAnyRole('USER') and #userId = authentication.principal.id)")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable("id") Long userId, @RequestBody @Valid UserRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable("id") @Min(1) Long userId,
+                                                   @RequestBody @Valid UserRequest request) {
         User user = userMapper.requestToUser(userId, request);
 
         return ResponseEntity.ok(
@@ -62,7 +64,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") Long userId) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") @Min(1) Long userId) {
         userService.deleteById(userId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
