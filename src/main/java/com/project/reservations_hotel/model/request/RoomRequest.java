@@ -17,19 +17,19 @@ public class RoomRequest {
 
     private String description;
 
-    @NotBlank
+    @NotNull
     @Min(1)
     private int roomNumber;
 
-    @NotBlank
+    @NotNull
     @PositiveOrZero
     private int price;
 
-    @NotBlank
+    @NotNull
     @Min(1)
     private int maxSize;
 
-    @NotBlank
+    @NotNull
     @Min(1)
     private Long hostelId;
 

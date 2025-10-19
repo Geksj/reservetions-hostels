@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -54,7 +53,7 @@ public class StatisticService {
     }
 
     public String downloadUserStats() {
-        List<?> statDataList = userStatRepository.findAll();
+        List<UserStatData> statDataList = userStatRepository.findAll();
 
         File file = new File("statisticsByUser.csv");
 
@@ -77,9 +76,9 @@ public class StatisticService {
     }
 
     public String downloadBookingStats() {
-        List<?> statDataList = bookingStatRepository.findAll();
+        List<BookingStatData> statDataList = bookingStatRepository.findAll();
 
-        File file = new File("statisticsByBookibg.csv");
+        File file = new File("statisticsByBooking.csv");
 
         try (Writer writer = new FileWriter(file)){
             HeaderColumnNameMappingStrategy<BookingStatData> strategy = new HeaderColumnNameMappingStrategy<>();

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KafkaHandler {
 
     private final StatisticService statisticService;
@@ -18,6 +19,9 @@ public class KafkaHandler {
             groupId = "${app.kafka.kafkaMessageGroup}",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public void listenCreatedTopic(@Payload StatEvent message) {
+
+        log.info("User created: {}", message);
+
         statisticService.save(message);
     }
 
@@ -25,6 +29,9 @@ public class KafkaHandler {
             groupId = "${app.kafka.kafkaMessageGroup}",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public void listenBookingTopic(@Payload StatEvent message) {
+
+        log.info("Booking rooms: {}", message);
+
         statisticService.save(message);
     }
 

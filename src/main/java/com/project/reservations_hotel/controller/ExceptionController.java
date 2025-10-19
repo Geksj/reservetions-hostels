@@ -5,8 +5,6 @@ import com.project.reservations_hotel.exception.RoomAlreadyBookedException;
 import com.project.reservations_hotel.model.ExceptionResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.security.oauthbearer.internals.secured.ValidateException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

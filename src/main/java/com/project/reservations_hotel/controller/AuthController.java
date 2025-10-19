@@ -8,7 +8,6 @@ import com.project.reservations_hotel.model.auth.SimpleMessage;
 import com.project.reservations_hotel.model.kafka.StatEvent;
 import com.project.reservations_hotel.model.request.UserRequest;
 import com.project.reservations_hotel.security.SecurityService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

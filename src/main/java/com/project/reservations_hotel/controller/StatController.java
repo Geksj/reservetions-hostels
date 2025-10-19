@@ -28,23 +28,19 @@ public class StatController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Resource> downloadCreateUser(HttpServletResponse response) {
         Path path = Path.of(statisticService.downloadUserStats());
-        Resource fileResource = new FileSystemResource(path);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-
-        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attached: filename=\"" + path.getFileName().toString() + "\"");
-
-        return ResponseEntity.ok()
-                .header(httpHeaders.toString())
-                .contentLength(path.toFile().length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(fileResource);
+        return sendFile(path);
     }
 
     @GetMapping("/booking")
     @PreAuthorize("hasRole('ADMIN')")
     private ResponseEntity<Resource> downloadBooking() {
         Path path = Path.of(statisticService.downloadBookingStats());
+
+        return sendFile(path);
+    }
+
+    private ResponseEntity<Resource> sendFile(Path path) {
         Resource fileResource = new FileSystemResource(path);
 
         HttpHeaders httpHeaders = new HttpHeaders();
