@@ -1,7 +1,9 @@
-package com.project.reservations_hotel.controller;
+package com.project.reservations_hotel.monitoring.controller;
 
-import com.project.reservations_hotel.service.StatisticService;
-import jakarta.servlet.http.HttpServletResponse;
+import com.project.reservations_hotel.monitoring.ExportBooking;
+import com.project.reservations_hotel.monitoring.ExportUser;
+import com.project.reservations_hotel.monitoring.service.ExportService;
+import com.project.reservations_hotel.monitoring.service.MonitoringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -17,25 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.file.Path;
 
 @RestController
-@RequestMapping("/api/v1/statistic")
+@RequestMapping("/api/v1/monitoring/export")
 @RequiredArgsConstructor
 @Slf4j
-public class StatController {
+public class ExportController {
 
-    private final StatisticService statisticService;
+    private final MonitoringService statisticService;
 
-    @GetMapping("/createUser")
+    private final ExportService exportService;
+
+    @GetMapping("/createdUser")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Resource> downloadCreateUser(HttpServletResponse response) {
-        Path path = Path.of(statisticService.downloadUserStats());
+    public ResponseEntity<Resource> exportFileUser() {
+        Path path = Path.of(exportService.export(ExportUser.class));
 
         return sendFile(path);
     }
 
-    @GetMapping("/booking")
+    @GetMapping("/dateBooking")
     @PreAuthorize("hasRole('ADMIN')")
-    private ResponseEntity<Resource> downloadBooking() {
-        Path path = Path.of(statisticService.downloadBookingStats());
+    public ResponseEntity<Resource> exportFileBooking() {
+        Path path = Path.of(exportService.export(ExportBooking.class));
 
         return sendFile(path);
     }

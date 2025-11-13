@@ -1,7 +1,7 @@
 package com.project.reservations_hotel.listener;
 
 import com.project.reservations_hotel.model.kafka.StatEvent;
-import com.project.reservations_hotel.service.StatisticService;
+import com.project.reservations_hotel.monitoring.service.MonitoringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class KafkaHandler {
 
-    private final StatisticService statisticService;
+    private final MonitoringService statisticService;
 
     @KafkaListener(topics = "${app.kafka.userCreatedTopic}",
             groupId = "${app.kafka.kafkaMessageGroup}",

@@ -1,8 +1,7 @@
-package com.project.reservations_hotel.entity.eventsEntity;
+package com.project.reservations_hotel.monitoring.entity;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
-import com.opencsv.bean.CsvIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,18 +13,21 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "usersStatic")
-public class UserStatData {
+@Document(collection = "bookingStat")
+public class BookingMonitoringData implements MonitoringData {
 
     @Id
-    @CsvIgnore
     private String id;
 
-    @CsvBindByName(column = "User Id", required = true)
+    @CsvBindByName(column = "User Id")
     private Long userId;
 
-    @CsvBindByName(column = "Created date", required = true)
+    @CsvBindByName(column = "Check in Date")
     @CsvDate("dd/MM/yyyy")
-    private LocalDate createdDate;
+    private LocalDate checkInDate;
+
+    @CsvBindByName(column = "Departure Date")
+    @CsvDate("dd/MM/yyyy")
+    private LocalDate departureDate;
 
 }

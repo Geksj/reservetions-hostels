@@ -5,64 +5,48 @@ import com.project.reservations_hotel.exception.RoomAlreadyBookedException;
 import com.project.reservations_hotel.model.ExceptionResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.Instant;
 
 @RestControllerAdvice
-@ConditionalOnProperty("${app.exception.enable}")
 public class ExceptionController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ExceptionResponse> notFound(EntityNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ExceptionResponse.builder()
-                        .statusCode(String.valueOf(HttpStatus.NOT_FOUND))
-                        .message(e.getMessage())
-                        .timestamp(Instant.now())
-                        .build());
+        return createResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> conflict(AlreadyExistsException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ExceptionResponse.builder()
-                        .statusCode(String.valueOf(HttpStatus.CONFLICT))
-                        .message(e.getMessage())
-                        .timestamp(Instant.now())
-                        .build());
+        return createResponse(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(RoomAlreadyBookedException.class)
     public ResponseEntity<ExceptionResponse> unprocessableEntity(RoomAlreadyBookedException e) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(ExceptionResponse.builder()
-                        .statusCode(String.valueOf(HttpStatus.UNPROCESSABLE_ENTITY))
-                        .message(e.getMessage())
-                        .timestamp(Instant.now())
-                        .build());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleAllUnhandledExceptions(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ExceptionResponse.builder()
-                        .statusCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
-                        .message("An unexpected error occurred")
-                        .timestamp(Instant.now())
-                        .build());
+        return createResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResponse> handleValidateExceptions(ConstraintViolationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionResponse> handleValidateExceptions(ConstraintViolationException e) {
+        return createResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleAllUnhandledExceptions(Exception e) {
+        return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    private ResponseEntity<ExceptionResponse> createResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status)
                 .body(ExceptionResponse.builder()
-                        .statusCode(String.valueOf(HttpStatus.BAD_REQUEST))
-                        .message(ex.getMessage())
+                        .statusCode(String.valueOf(status))
+                        .message(message)
                         .timestamp(Instant.now())
                         .build());
     }
